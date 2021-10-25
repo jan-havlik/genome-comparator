@@ -1,5 +1,5 @@
-# curl -L 'https://api.genome.ucsc.edu/getData/track?genome=hg19;chrom=chr8;start=128745680;end=128755674;track=hub_124277_RLFS'
-# curl -L 'https://api.genome.ucsc.edu/getData/sequence?genome=hg19;chrom=chr8;start=128745680;end=128755674;'
+# curl -L 'https://api.genome.ucsc.edu/getData/track?genome=hg19;chrom=chr11;start=65188245;end=65194245;track=hub_124277_RLFS'
+# curl -L 'https://api.genome.ucsc.edu/getData/sequence?genome=hg19;chrom=chr11;start=65188245;end=65194245;'
 
 import json
 from itertools import product, islice
@@ -80,25 +80,27 @@ class GenomeBrowserRecord:
             self.verts.append(([float(res[endString]), self.graph_position]))
             self.positions += range(int(res[startString]), int(res[endString]))
 
-rloopr_verts, rloopr_positions = load_bedgraph("./myc/chr8_hub_124277/d5194783-f902-4282-9579-5cb895706be2.bedgraph", 0.35)
-
 
 # QMRLFS
-qmrlfs = GenomeBrowserRecord(0.15)
-qmrlfs.load_file("./myc/chr8_hub_124277/RLFS.txt")
+qmrlfs = GenomeBrowserRecord(0.05)
+qmrlfs.load_file("./qmrlfs.txt")
 
-# hub_124277_DRIP1_peaks_NT2_Sanz_2016
-#drip1 = GenomeBrowserRecord(0.3)
-#drip1.load_file("./myc/chr8_hub_124277/hub_124277_DRIP1_peaks_NT2_Sanz_2016.txt")
+# Rloop tracker
+rloopr_verts, rloopr_positions = load_bedgraph("./chr11_rloopt.bedgraph", 0.15)
 
-# hub_124277_Fibroblast_Nadel_2015
-#rdip = GenomeBrowserRecord(0.4)
-#rdip.load_file("./myc/chr8_hub_124277/hub_124277_Fibroblast_Nadel_2015.txt")
+#G4 Hunter
+g4_verts, g4_positions = load_bedgraph("./chr11_g4.bedgraph", 0.25)
 
+# hub_124277_Fibroblast_rdip_Nadel_2015_peaks
+rdip = GenomeBrowserRecord(0.35)
+rdip.load_file("./Fibroblast_rdip_Nadel_2015_peaks.txt")
+rdip.track_name = rdip.track_name.replace("hub_124277_", "")
 
-# chr11_neat1_hub_124277_RNA-seq_r2_NT2_Sanz_2016
-#nt2 = GenomeBrowserRecord(0.9)
-#nt2.load_file("./neat1/chr11_neat1_hub_124hub_124277_Fibroblast_Nadel_2015
+# hub_124277_epithelial_rdip_Nadel_2015_peaks
+rdip2 = GenomeBrowserRecord(0.45)
+rdip2.load_file("./Epithelial_rdip_Nadel_2015_peaks.txt")
+rdip2.track_name = rdip2.track_name.replace("hub_124277_", "")
+
 print(qmrlfs.chromosome)
 print(qmrlfs.track_name)
 
@@ -107,21 +109,23 @@ fig, ax = plt.subplots()
 
 patch = patches.PathPatch(Path(qmrlfs.verts, codes * int(len(qmrlfs.verts)/2)), edgecolor='red', lw=4)
 ax.add_patch(patch)
-ax.text(qmrlfs.track_start + 20, 0.2, "QmRLFS-finder", color='red')
+ax.text(qmrlfs.track_start + 20, 0.06, "QmRLFS-finder", color='red')
 
 patch = patches.PathPatch(Path(rloopr_verts, codes * int(len(rloopr_verts)/2)), edgecolor='green', lw=4)
 ax.add_patch(patch)
-ax.text(qmrlfs.track_start + 2, 0.4, "Rloop tracker"+" (similarity to Qm-RFLS results: "+ cmp_similarity(qmrlfs.positions, rloopr_positions) +" %)", color='green')
+ax.text(qmrlfs.track_start + 2, 0.16, "Rloop tracker"+" (similarity to Qm-RFLS results: "+ cmp_similarity(qmrlfs.positions, rloopr_positions) +" %)", color='green')
 
-#patch = patches.PathPatch(Path(drip1.verts, codes * int(len(drip1.verts)/2)), edgecolor='black', lw=2)
-#ax.add_patch(patch)
-#ax.text(drip1.track_start, 0.26, drip1.track_name+" (similarity to Qm-RFLS results: "+ cmp_similarity(qmrlfs.positions, drip1.positions) +"%)", color='black')
+patch = patches.PathPatch(Path(g4_verts, codes * int(len(g4_verts)/2)), edgecolor='black', lw=2)
+ax.add_patch(patch)
+ax.text(qmrlfs.track_start + 2, 0.26, "G4 hunter"+" (similarity to Qm-RFLS results: "+ cmp_similarity(qmrlfs.positions, g4_positions) +" %)", color='black')
 
-#atch = patches.PathPatch(Path(rdip.verts, codes * int(len(rdip.verts)/2)), edgecolor='black', lw=2)
-#ax.add_patch(patch)
-#ax.text(rdip.track_start, 0.36, rdip.track_name+" (similarity to Qm-RFLS results: "+ cmp_similarity(qmrlfs.positions, rdip.positions) +"%)", color='black')
+patch = patches.PathPatch(Path(rdip.verts, codes * int(len(rdip.verts)/2)), edgecolor='black', lw=2)
+ax.add_patch(patch)
+ax.text(rdip.track_start, 0.36, rdip.track_name+" (similarity to Qm-RFLS results: "+ cmp_similarity(qmrlfs.positions, rdip.positions) +"%)", color='black')
 
-
+patch = patches.PathPatch(Path(rdip2.verts, codes * int(len(rdip2.verts)/2)), edgecolor='black', lw=2)
+ax.add_patch(patch)
+ax.text(rdip2.track_start, 0.46, rdip2.track_name+" (similarity to Qm-RFLS results: "+ cmp_similarity(qmrlfs.positions, rdip2.positions) +"%)", color='black')
 
 ax.set_xlim(qmrlfs.track_start, qmrlfs.track_end)
 ax.set_ylim(0, 0.6)

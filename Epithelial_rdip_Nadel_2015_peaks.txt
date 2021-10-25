@@ -1,0 +1,2 @@
+
+{ "downloadTime": "2021:10:24T21:18:05Z", "downloadTimeStamp": 1635110285, "genome": "hg19", "trackType": "bigBed", "track": "hub_124277_epithelial_rdip_Nadel_2015_peaks", "chrom": "chr11", "chromSize": 135006516, "bigDataUrl": "http:\/\/rloop.bii.a-star.edu.sg\/gb2_database\/hg19\/bb\/HekRDIP2P_peaks.final.bb", "start": 65188245, "end": 65194245, "hub_124277_epithelial_rdip_Nadel_2015_peaks": [ { "chrom": "chr11", "chromStart": 65190270, "chromEnd": 65193178, "name": "MACS_peak_6704_850.27"} ] , "itemsReturned": 1} 
